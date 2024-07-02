@@ -9,6 +9,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import productsReducer from './reducers/productsReducer';
 import cartsReducer from './reducers/cartsReducer';
+import memberReducer from './reducers/memberReducer';
 
 
 
@@ -16,7 +17,8 @@ import cartsReducer from './reducers/cartsReducer';
 const store = configureStore({
   reducer: {
     products : productsReducer,
-    carts : cartsReducer
+    carts : cartsReducer,
+    member: memberReducer
   }
 })
 

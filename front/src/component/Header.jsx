@@ -3,15 +3,18 @@ import {FiShoppingBag} from 'react-icons/fi';
 import {BsFillPencilFill} from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
 import {getUser, removeUser} from '../util/localStorage.js';
-
-
-
+import { useDispatch } from 'react-redux';
+import { getIsLogout } from '../modules/reduxMemberAxios.js'
 
 export default function Header({cartCount}) {
+	const dispatch = useDispatch()
 	const navigate = useNavigate();
-
 	const userInfo = getUser();
+
+	// 로그아웃
 	const handleLogout = () => {
+		dispatch(getIsLogout());
+
 		removeUser();
 		navigate('/');
 	}
