@@ -16,31 +16,25 @@ import BoardDelete from './pages/BoardDelete';
 import BoardWrite from './pages/BoardWrite';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getUser, removeUser } from './util/localStorage';
+
 
 
 export default function App() {
+  const userInfo = getUser();
 	// useState 장점  리액트에서 사용하는 모든페이지에 리액트가 알아서 랜더링해줌, 값이 계속 바뀔때 사용
   const [cartCount, setCartCount] = useState(0);//카트갯수 카운트
   const [cartItems, setCartItems] = useState([]);//카드리스트 데이터
   
-	// 1.로그인 여부 체크
-	// 2.로그인 한 경우 -> 회원아디로 cartCount 가져오기
-	// 회원아이디를 넘기기 때문에 post 방식 사용
-	useEffect(()=>{
-		const url = `http://127.0.0.1:8080/carts/count`;
-    const data = { user_id : "test" }
-		// DB에서 count값 가져오는 axios
-		axios({
-			method: 'post',
-			url:url,
-			data: data
-		})
-		.then(result=>{
-      setCartCount(parseInt(result.data.count))
-		})
-		.catch(error => console.log(error));
 
-	},[]);
+   //cartItem 삭제
+   const removeCartItem = (cid, qty) => {
+    const removeIndex = cartItems.findIndex(item => item.cid === cid);
+    const updateCartList = cartItems.filter((item, i) => i !== removeIndex );
+    setCartItems(updateCartList);
+    setCartCount(cartCount-qty);
+  }
+
 
   //장바구니 갯수 추가
 	//detailProduct에서 처리한 장바구니 추가 결과 가져오기
@@ -50,14 +44,13 @@ export default function App() {
 
   }
   
-  //cartItem 삭제
-  const removeCartItem = (cid, qty) => {
-    const removeIndex = cartItems.findIndex(item => item.cid === cid);
-    const updateCartList = cartItems.filter((item, i) => i !== removeIndex );
-    setCartItems(updateCartList);
-    setCartCount(cartCount-qty);
-  }
-
+  
+    // 로그인 성공 시 처리한 장바구니 추가 결과 가져오기
+    const addLoginCartCount = (result) => {  
+      console.log('addLoginCartCount ==> ', result);
+      setCartCount(result);
+    }
+ 
 
   const router = createBrowserRouter([
     {
@@ -66,10 +59,10 @@ export default function App() {
       children: [
         {path: "/", element: <Home />,},
         {path: "/products",element: <AllProducts />,},
-        {path: "/products/:id",element: <DetailProduct addCartCount={addCartCount} removeCartItem={removeCartItem} />, },
-        {path: "/carts", element: <MyCart cartItems={cartItems} />, },
+        {path: "/products/:id",element: <DetailProduct addCartCount={addCartCount} />, },
+        {path: "/carts", element: <MyCart cartItems={cartItems} removeCartItem={removeCartItem} />, },
         {path: "/products/new", element: <NewProduct />, },
-        {path: "/login",element: <Login />,},
+        {path: "/login",element: <Login count={addLoginCartCount} />,},
         {path: "/signup",element: <Signup />,},
         {path: "/board",element: <BoardList />,},
         {path: "/board/:bid/:rno",element: <BoardContent />,},

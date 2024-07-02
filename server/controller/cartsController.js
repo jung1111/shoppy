@@ -3,9 +3,9 @@ import * as repository from '../repository/cartsRepository.js'
 
 /* 장바구니 count */
 export const getCount = async(req, res) => {
-	const {user_id} = req.body;  //{userId:'test'} 들어있음
+	const {userId} = req.body;  //{userId:'test'} 들어있음
 	// console.log('userId-->>', userId);
-	const result = await repository.getCount(user_id);
+	const result = await repository.getCount(userId);
 	res.json(result);
 	res.end();
 }
